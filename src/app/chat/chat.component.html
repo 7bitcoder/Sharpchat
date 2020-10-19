@@ -1,0 +1,20 @@
+<section class="chat content">
+        <div class="row TextBox m-0">
+            <div #chatWindow class="h-100 col-12 px-1 px-md-5 pt-1 pt-md-2 pb-0">
+                <div class="backgroundBlack chatContent d-block h-100 w-100">
+                </div>
+            </div>
+        </div>
+        <div class="row InputBox m-0">
+            <div class="h-100 col-10 pr-1 pl-1 pl-md-5 py-1 py-md-2">
+                <div class="backgroundBlack d-block h-100 w-100">
+                    <input #textInput type="text" class="form-control search-input" name="search" placeholder="Search..." ngModel (ngModelChange)="onTextChange($event)" (keyup.enter)="sendMessage(textInput.value)">
+                </div>
+            </div>
+            <div class="h-100 col-2 pl-0 pr-1 pr-md-5 py-1 py-md-2">
+                <div class="backgroundBlack d-block h-100 w-100">
+                    Wyślij
+                </div>
+            </div>
+        </div>
+</section>

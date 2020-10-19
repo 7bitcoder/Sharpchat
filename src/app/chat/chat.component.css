@@ -1,0 +1,9 @@
+.TextBox{
+ height: 70%;
+}
+.InputBox{
+    height: 15%;
+}
+.chatContent {
+    overflow: hidden;
+}

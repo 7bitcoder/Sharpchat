@@ -24,5 +24,9 @@ transition: all 0.15s;
 a.myButton:hover {
 text-shadow: 0 0 2em rgba(255,255,255,1);
 }
+.content{
+  background-color: #404040 !important;
+  height: 100vh;
+}
 
   
