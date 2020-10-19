@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgModule } from '@angular/core';
+import { Message } from "./message";
 
 @Component({
   selector: 'app-chat',
@@ -8,10 +9,8 @@ import { NgModule } from '@angular/core';
 })
 export class ChatComponent implements OnInit {
 
-  chatText: string = "";
+  chatMessages: Message[] = [];
   counter: number = 0;
-
-  @ViewChild('chatWindow') chatWindow: ElementRef;
 
   constructor() { }
 
@@ -21,8 +20,15 @@ export class ChatComponent implements OnInit {
   onTextChange(event){
     console.log(this.counter++);
   }
-  sendMessage(event){
-    console.log(event);
-    this.chatWindow.nativeElement.insertAdjacentHTML('beforeend', '<p>' + event + '</p>');
+
+  sendMessage(message: string){
+    let msg: Message = new Message("you", message);
+    this.chatMessages.push(msg);
+    console.log(msg);
   }
+
+  identify(index, message: Message){
+    return message.id; 
+ }
+
 }

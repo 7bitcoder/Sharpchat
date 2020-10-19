@@ -7,3 +7,18 @@
 .chatContent {
     overflow: hidden;
 }
+
+.you {
+    color: green;
+}
+.stranger{
+    color: red;
+}
+
+.client{
+
+}
+
+.server{
+
+}

@@ -1,7 +1,10 @@
 <section class="chat content">
         <div class="row TextBox m-0">
-            <div #chatWindow class="h-100 col-12 px-1 px-md-5 pt-1 pt-md-2 pb-0">
+            <div class="h-100 col-12 px-1 px-md-5 pt-1 pt-md-2 pb-0">
                 <div class="backgroundBlack chatContent d-block h-100 w-100">
+                    <p [class]="message.user" *ngFor="let message of chatMessages; trackBy: identify">
+                        {{message.message}}
+                    </p>
                 </div>
             </div>
         </div>
