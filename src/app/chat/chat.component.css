@@ -6,6 +6,7 @@
 }
 .chatContent {
     overflow: hidden;
+    overflow-y: auto
 }
 
 .you {
@@ -21,4 +22,15 @@
 
 .server{
 
+}
+.msgContainer {
+    width: 100%;
+    margin: 0;
+    word-wrap: break-word;
+}
+.msg {
+    float: left;
+}
+.messagePrefix{
+    float: left;
 }

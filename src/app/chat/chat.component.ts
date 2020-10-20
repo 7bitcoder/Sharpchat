@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgModule } from '@angular/core';
-import { Message } from "./message";
+import { Message, User } from "./message";
 
 @Component({
   selector: 'app-chat',
@@ -12,9 +12,13 @@ export class ChatComponent implements OnInit {
   chatMessages: Message[] = [];
   counter: number = 0;
 
+  @ViewChild('textInput') inputField: ElementRef;
+  @ViewChild('msgContainer') msgContainer: ElementRef;
+  
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
   onTextChange(event){
@@ -22,9 +26,15 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage(message: string){
-    let msg: Message = new Message("you", message);
+    if(message.length == 0) 
+      return;
+
+    let msg: Message = new Message(User.you, message);
     this.chatMessages.push(msg);
     console.log(msg);
+    this.inputField.nativeElement.value = '';
+    let msgCont = this.msgContainer.nativeElement;
+    msgCont.scrollTop = msgCont.scrollHeight;
   }
 
   identify(index, message: Message){

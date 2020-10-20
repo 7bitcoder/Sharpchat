@@ -1,7 +1,7 @@
-import { Message } from './message';
+import { Message, User } from './message';
 
 describe('Message', () => {
   it('should create an instance', () => {
-    expect(new Message("client", "")).toBeTruthy();
+    expect(new Message(User.client, "")).toBeTruthy();
   });
 });
