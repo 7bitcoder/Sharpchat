@@ -30,8 +30,10 @@ body {
     scrollbar-width: thin !important;
 }
 
-a.myButton {
-    display: inline-block;
+.myButton {
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */   
     padding: 0.46em 1.6em;
     margin:0 0.2em 0.2em 0;
     box-sizing: border-box;
@@ -39,12 +41,15 @@ a.myButton {
     font-weight:300;
     color:#FFFFFF;
     text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
-    background-color:#739900 !important;
-    text-align:center;
+    background-color:#739900;
+    text-align: center;
     transition: all 0.15s;
+    cursor: pointer;
+    transition: 0.3s;
 }
-a.myButton:hover {
-text-shadow: 0 0 2em rgba(255,255,255,1);
+.myButton:hover {
+    text-shadow: 0 0 2em rgba(255,255,255,1);
+    background-color:#9fb951 
 }
 
 .backgroundBlack {
@@ -53,7 +58,7 @@ text-shadow: 0 0 2em rgba(255,255,255,1);
 .content, .backgroundGrey {
     background-color: #404040 !important;
 }
-.content{
+.content, .dispHeight{
     height: 100vh;
 }
 

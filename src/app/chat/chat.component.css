@@ -1,8 +1,8 @@
 .TextBox{
- height: 70%;
+ height: 80%;
 }
 .InputBox{
-    height: 15%;
+    height: 8%;
 }
 .chatContent {
     overflow: hidden;
@@ -33,4 +33,5 @@
 }
 .messagePrefix{
     float: left;
+    font-weight: bold;
 }

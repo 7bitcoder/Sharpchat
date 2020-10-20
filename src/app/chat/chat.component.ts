@@ -39,6 +39,9 @@ export class ChatComponent implements OnInit {
 
   identify(index, message: Message){
     return message.id; 
- }
+  }
 
+  closeChat(){
+    console.log("closed")
+  }
 }
