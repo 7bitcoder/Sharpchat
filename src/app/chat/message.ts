@@ -5,7 +5,7 @@ export class Message {
     public id: number;
     constructor(
         public user: User,
-        public message: string
+        public message: string[]
     ){
         this.id = Message.idCounter++;
     }

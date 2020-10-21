@@ -30,6 +30,10 @@
 }
 .msg {
     float: left;
+    word-break: break-all;
+}
+.robotMsg{
+    border-bottom: 1px solid black;
 }
 .messagePrefix{
     float: left;
@@ -37,4 +41,5 @@
 }
 .myTextInput{
     color: white;
+    border: 1px solid black !important;
 }

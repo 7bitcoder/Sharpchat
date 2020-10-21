@@ -68,6 +68,9 @@ body {
 button, input {
     border-width: 0;
 }
+.clearfix{
+    clear: both;
+}
 .nofocus:focus {
     outline: none;
 }
