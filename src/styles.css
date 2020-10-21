@@ -61,4 +61,13 @@ body {
 .content, .dispHeight{
     height: 100vh;
 }
-
+*:focus {
+    outline: none !important;
+    border: 0 !important;
+}
+button, input {
+    border-width: 0;
+}
+.nofocus:focus {
+    outline: none;
+}

@@ -13,7 +13,7 @@
         <div class="row InputBox m-0">
             <div class="h-100 col-1 px-0 pl-md-5 py-0 d-inline my-auto ">
                 <div class=" backgroundGrey d-block h-100 row mx-0">
-                    <div class="myButton w-100 h-100" (click)="closeChat()">Zakończ</div>
+                    <button class="myButton w-100 h-100" (click)="closeChat()">Zakończ</button>
                     <!--<div class="col-12 h-100 d-table">
                         <div class="d-table-cell align-middle text-center">
                             Wyjdź
@@ -23,12 +23,12 @@
             </div>
             <div class="h-100 col-10 px-0 py-0">
                 <div class="backgroundGrey d-block h-100 w-100">
-                    <input #textInput type="text" class="form-control search-input" name="search" placeholder="Search..." ngModel (ngModelChange)="onTextChange($event)" (keyup.enter)="sendMessage(textInput.value)">
+                    <input #textInput type="text" class="backgroundGrey myTextInput w-100 h-100 px-2 py-1" ngModel (ngModelChange)="onTextChange($event)" (keyup.enter)="sendMessage(textInput.value)">
                 </div>
             </div>
             <div class="h-100 col-1 px-0 pr-md-5 py-0 text-center">
                 <div class="backgroundGrey d-block h-100 w-100">
-                    <button class="myButton w-100 h-100 b-0" (click)="sendMessage(textInput.value)">Wyślij</button>
+                    <button mat-button class="myButton w-100 h-100 b-0" (click)="sendMessage(textInput.value)">Wyślij</button>
                 </div>
             </div>
         </div>
