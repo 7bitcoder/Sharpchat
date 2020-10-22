@@ -8,7 +8,8 @@ import { UserInfoComponent } from './main-page/user-info/user-info.component';
 import { StrangerInfoComponent } from './main-page/stranger-info/stranger-info.component';
 import { ChatComponent } from './chat/chat.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import {  ChatService } from "./chat.service"
+import {  ChatService } from "./chat.service";
+import { PopMessagesComponent } from './chat/pop-messages/pop-messages.component'
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {  ChatService } from "./chat.service"
     UserInfoComponent,
     StrangerInfoComponent,
     ChatComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    PopMessagesComponent
   ],
   imports: [
     BrowserModule,

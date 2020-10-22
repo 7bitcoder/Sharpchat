@@ -3,19 +3,14 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { ServerConfig } from './server-config';
 import { catchError, tap, switchAll } from 'rxjs/operators';
 import { EMPTY, Subject } from 'rxjs';
+import { Chatprotocol } from "./chatprotocol"
 
 @Injectable({
   providedIn: 'root'
 })
-export class Format {
-  constructor(
-  public message: string
-  ){}
-}
 export class ChatService {
 
-    private socket$: WebSocketSubject<Format>;
-    private messagesSubject$ = new Subject();
+    private socket$: WebSocketSubject<Chatprotocol>;
    
     public connect(): void {
    
@@ -30,11 +25,11 @@ export class ChatService {
    
     private getNewWebSocket() {
       console.log(ServerConfig.getUrl())
-      return webSocket<Format>(ServerConfig.getUrl());
+      return webSocket<Chatprotocol>(ServerConfig.getUrl());
     }
 
-    sendMessage(msg: string) {
-      this.socket$.next( new Format(msg) );
+    sendData(data: Chatprotocol) {
+      this.socket$.next( data );
     }
 
     close() {

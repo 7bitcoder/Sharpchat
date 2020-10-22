@@ -12,16 +12,16 @@
 .you {
     color: green;
 }
-.stranger{
+.stranger {
     color: red;
 }
 
-.client{
-
+.client {
+    display: none;
 }
 
-.server{
-
+.server {
+    display: none;
 }
 .msgContainer {
     width: 100%;
@@ -32,10 +32,10 @@
     float: left;
     word-break: break-all;
 }
-.robotMsg{
+.robotMsg {
     border-bottom: 1px solid black;
 }
-.messagePrefix{
+.messagePrefix {
     float: left;
     font-weight: bold;
 }

@@ -1,8 +1,8 @@
 <section class="chat dispHeight">
         <div class="row TextBox m-0">
             <div class="h-100 col-12 px-0 px-md-5 pt-1 pt-md-2 pb-0">
-                <div #RobotMessages class="backgroundGrey d-block w-100 robotMsg px-4 py-2">{{robotMessage + ' '}} </div>
-                <div #msgContainer class="backgroundGrey chatContent d-block h-100 w-100 px-1">
+                <header #RobotMessages class="backgroundGrey d-block w-100 robotMsg px-4 py-3 h5 my-0">{{robotMessage + ' '}} </header>
+                <section #msgContainer class="backgroundGrey chatContent d-block h-100 w-100 px-1 h6">
                     <div class="msgContainer" *ngFor="let message of chatMessages; trackBy: identify">
                         <div [class]="message.getUserString() + ' px-1 d-block messagePrefix'">{{message.getMessagePrefix() + ':  '}}</div>
                         <div class="msg d-block pl-1" *ngFor="let msgRow of message.message; first as f" [class.clearfix]="!f">
@@ -10,7 +10,8 @@
                         </div>
                         <div class="clearfix"></div>
                     </div>
-                </div>
+                    <div clsss="w-100" *ngIf="robotChatMessage.length > 0"> {{robotChatMessage}} </div>
+                </section>
             </div>
         </div>
         <div class="row InputBox m-0">
@@ -35,4 +36,5 @@
                 </div>
             </div>
         </div>
+        <app-pop-messages [changing]="changingValue"></app-pop-messages>
 </section>

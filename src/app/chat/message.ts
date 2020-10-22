@@ -23,8 +23,13 @@ export class Message {
                 return "";
         }
     }
+    
     public getMessagePrefix(){
-        switch(this.user){
+        return Message.getMessagePrefix(this.user);
+    }
+
+    public static getMessagePrefix(user: User){
+        switch(user){
             case User.you:
                 return "Ty";
             case User.stranger:
