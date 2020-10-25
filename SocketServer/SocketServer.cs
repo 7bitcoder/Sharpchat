@@ -131,6 +131,7 @@ namespace SharpChat.SocketServer
             await semaphore.WaitAsync();
             Console.WriteLine($"sending data {data}");
             await user.webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            semaphore.Release();
             return true;
         }
 
