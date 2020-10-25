@@ -23,6 +23,7 @@ export class ChatComponent implements OnInit {
   }
   DEBUG: boolean = false;
   userId: string;
+  lobbyId: string;
   chatMessages: Message[] = [];
   counter: number = 0;
   robotMessage: string = ""
@@ -129,10 +130,18 @@ export class ChatComponent implements OnInit {
       case "stopwriting":
         this.setStrangerWritting("stopped");
         break;
+      case "giveLobbyId":
+        this.lobbyId = data.data;
+        this.robotMessage = this.RobotMessages.connected;
+        this.postMessage(User.client, "Połączono z rozmówcą napisz hej :)")
+        break;
       case "giveId":
         this.userId = data.data;
         this.robotMessage = this.RobotMessages.connected;
+        this.chatService.sendData(new Chatprotocol("searchForStranger", ""))
+        console.log(this.userId);
       case "ping":
+      case "searchForStranger":
       default:
         break;
     }

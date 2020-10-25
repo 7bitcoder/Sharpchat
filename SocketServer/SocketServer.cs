@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -18,12 +19,16 @@ namespace SharpChat.SocketServer
     public class SocketServer
     {
         static SocketServer server = new SocketServer();
+
+        MatchMaking mm = new MatchMaking();
         public static SocketServer getSocketServer()
         {
             return server;
         }
         private SocketServer()
-        { }
+        {
+            mm.run();
+        }
 
         public async void handleUser(HttpContext context, WebSocket webSocket, TaskCompletionSource<object> end)
         {
@@ -56,12 +61,21 @@ namespace SharpChat.SocketServer
             webSocket = webSocket_;
         }
     }
+
+    class Lobby
+    {
+        public Guid lobbyId { set; get; }
+        public UserHandler first { set; get; }
+        public UserHandler second { set; get; }
+    }
     class UserHandler
     {
+        internal static Dictionary<Guid, Lobby> lobbys = new Dictionary<Guid, Lobby>();
         private byte[] bufferR = new byte[1024 * 4];
         private byte[] bufferS = new byte[1024 * 4]; //send receive buffer
-        User user;
-        private static SemaphoreSlim semaphore;
+        internal User user;
+        internal Lobby lobby;
+        private SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
         internal UserHandler(WebSocket webSocket_)
         {
@@ -69,6 +83,7 @@ namespace SharpChat.SocketServer
         }
         internal async Task<bool> handle()
         {
+            Console.WriteLine($"new user: id {user.uid.ToString()}");
             await sendData(new Data { command = "giveId", data = user.uid.ToString() });
             while (true)
             {
@@ -79,6 +94,7 @@ namespace SharpChat.SocketServer
                 analyzeData(data, dataTuple.data);
                 Console.WriteLine($"command: {data.command} data: {data.data}");
             }
+            Console.WriteLine("closing");
             return true;
         }
 
@@ -93,13 +109,13 @@ namespace SharpChat.SocketServer
                     result = await user.webSocket.ReceiveAsync(array, CancellationToken.None);
                     ms.Write(array.Array, array.Offset, result.Count);
                     if (result.CloseStatus.HasValue)
-                        return ("", false);
+                        return ("", true);
                 }
                 while (!result.EndOfMessage);
 
                 ms.Seek(0, SeekOrigin.Begin);
                 using (var reader = new StreamReader(ms, Encoding.UTF8))
-                    return (reader.ReadToEnd(), true);
+                    return (reader.ReadToEnd(), false);
             }
         }
 
@@ -109,32 +125,35 @@ namespace SharpChat.SocketServer
             return (JsonConvert.DeserializeObject<Data>(dataTuple.data), dataTuple.closed);
         }
 
-        private async Task<bool> sendString(String data)
+        internal async Task<bool> sendString(String data)
         {
             var bytes = Encoding.UTF8.GetBytes(data);
             await semaphore.WaitAsync();
-            await user.webSocket.SendAsync(new ArraySegment<byte>(bufferS, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            Console.WriteLine($"sending data {data}");
+            await user.webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             return true;
         }
 
-        private async Task<bool> sendData(Data data)
+        internal async Task<bool> sendData(Data data)
         {
             var str = JsonConvert.SerializeObject(data);
             await sendString(str);
             return true;
         }
 
-        private void analyzeData(Data data, String rawData)
+        private async void analyzeData(Data data, String rawData)
         {
             switch (data.command)
             {
                 case "message":
                 case "writing":
                 case "stopwriting":
-                    //send raw to 
+                    var l = this == lobby.first ? lobby.second : lobby.first;
+                    await l.sendString(rawData);
+                    Console.WriteLine("ready To send");
                     break;
                 case "searchForStranger":
-
+                    MatchMaking.queue.Add(this);
                     break;
                 case "giveId":
                 case "ping":
@@ -142,30 +161,29 @@ namespace SharpChat.SocketServer
                     break;
             }
         }
-
-        public static async Task<String> ReadString(WebSocket ws)
-        {
-
-        }
     }
 
     class MatchMaking
     {
-        ConcurrentQueue<UserHandler> queue = new ConcurrentQueue<UserHandler>();
+        internal static BlockingCollection<UserHandler> queue = new BlockingCollection<UserHandler>();
         public async Task<bool> run()
         {
             return await Task<bool>.Run(() =>
             {
-                UserHandler uh;
-                if (queue.TryDequeue(out uh))
+                while (true)
                 {
-
+                    UserHandler uh1 = queue.Take();
+                    Console.WriteLine("one gett");
+                    UserHandler uh2 = queue.Take();
+                    Console.WriteLine("2 gett");
+                    var lobby = new Lobby() { lobbyId = Guid.NewGuid(), first = uh1, second = uh2 };
+                    uh1.lobby = lobby;
+                    uh2.lobby = lobby;
+                    UserHandler.lobbys.Add(lobby.lobbyId, lobby);
+                    var msg = new Data { command = "giveLobbyId", data = lobby.lobbyId.ToString() };
+                    uh1.sendData(msg);
+                    uh2.sendData(msg);
                 }
-                else
-                {
-
-                }
-                queue.
                 return true;
             });
         }

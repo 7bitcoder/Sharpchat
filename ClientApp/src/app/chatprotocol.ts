@@ -6,7 +6,8 @@ export class Chatprotocol {
       "ping" |
       "stopwriting" |
       "giveId"|
-      "searchForStranger",
+      "searchForStranger"|
+      "giveLobbyId",
     public data: string
   ) { }
 }
