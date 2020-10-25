@@ -22,7 +22,7 @@ export class ChatComponent implements OnInit {
     }
   }
   DEBUG: boolean = false;
-  liveData$
+  userId: string;
   chatMessages: Message[] = [];
   counter: number = 0;
   robotMessage: string = ""
@@ -129,6 +129,9 @@ export class ChatComponent implements OnInit {
       case "stopwriting":
         this.setStrangerWritting("stopped");
         break;
+      case "giveId":
+        this.userId = data.data;
+        this.robotMessage = this.RobotMessages.connected;
       case "ping":
       default:
         break;
@@ -136,7 +139,7 @@ export class ChatComponent implements OnInit {
   }
 
   postMessage(who: User, message: string) {
-    if (message.length != 0)  {
+    if (message.length != 0) {
       let msg: Message = new Message(who, message.split('\n')); //remove enter and split
       this.chatMessages.push(msg);
     }
