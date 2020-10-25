@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace SharpChat
 {
     public class Startup
     {
+        private SocketServer.SocketServer server = SocketServer.SocketServer.getSocketServer(); // singeleton
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -40,12 +42,7 @@ namespace SharpChat
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            /*var webSocketOptions = new WebSocketOptions()
-            {
-                KeepAliveInterval = System.TimeSpan.FromSeconds(120),
-                ReceiveBufferSize = 4 * 1024
-            };
-            */
+
             app.UseWebSockets();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -61,6 +58,29 @@ namespace SharpChat
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/ws")
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        var socketFinishedTcs = new TaskCompletionSource<object>();
+                        server.Echo(context, webSocket, socketFinishedTcs);
+                        await socketFinishedTcs.Task;
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                }
+                else
+                {
+                    await next();
+                }
+
             });
 
             app.UseSpa(spa =>

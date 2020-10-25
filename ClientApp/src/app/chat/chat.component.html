@@ -6,7 +6,7 @@
                     <div class="msgContainer" *ngFor="let message of chatMessages; trackBy: identify">
                         <div [class]="message.getUserString() + ' px-1 d-block messagePrefix'">{{message.getMessagePrefix() + ':  '}}</div>
                         <div class="msg d-block pl-1" *ngFor="let msgRow of message.message; first as f" [class.clearfix]="!f">
-                            {{msgRow}} <br>
+                            {{msgRow}}
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -27,7 +27,7 @@
             </div>
             <div class="h-100 col-10 px-0 py-0">
                 <div class="backgroundGrey d-block h-100 w-100">
-                    <textarea  #textInput type="text" class="backgroundGrey myTextInput w-100 h-100 px-2 py-1" ngModel (ngModelChange)="onTextChange($event)" (keyup.enter)="sendMessage(textInput.value)"></textarea>
+                    <textarea  #textInput type="text" class="backgroundGrey myTextInput w-100 h-100 px-2 py-1" (ngModelChange)="onTextChange($event)" [(ngModel)]="textValue" (keydown.enter)="sendMessage(textInput.value);false"></textarea>
                 </div>
             </div>
             <div class="h-100 col-1 px-0 pr-md-5 py-0 text-center">

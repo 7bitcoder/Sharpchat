@@ -21,7 +21,7 @@ export class ChatComponent implements OnInit {
       popMsg: new popInfo("Błąd połączenia", "Nie udało się połączyć z serverem, sprawdź połączenie internetowe i ponów próbę połączenie klikając w 'Ponów'", "Ponów", "Anuluj", () => this.ngOnInit())
     }
   }
-  DEBUG: boolean = true;
+  DEBUG: boolean = false;
   liveData$
   chatMessages: Message[] = [];
   counter: number = 0;
@@ -136,8 +136,8 @@ export class ChatComponent implements OnInit {
   }
 
   postMessage(who: User, message: string) {
-    if (!(message.length == 0 || message.length == 1)) {
-      let msg: Message = new Message(who, message.slice(0, -1).split('\n')); //remove enter and split
+    if (message.length != 0)  {
+      let msg: Message = new Message(who, message.split('\n')); //remove enter and split
       this.chatMessages.push(msg);
     }
   }
