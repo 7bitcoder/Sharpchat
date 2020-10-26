@@ -5,7 +5,9 @@ import { Message, User } from "./message";
 import { Subject, Subscription, timer } from 'rxjs';
 import { Chatprotocol } from '../chatprotocol';
 import { PopMessagesComponent, popInfo } from "./pop-messages/pop-messages.component"
-
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import {Preferences, Sex} from './../main-page/preferences/preferences'
+import { getAttrsForDirectiveMatching } from '@angular/compiler/src/render3/view/util';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -19,6 +21,29 @@ export class ChatComponent implements OnInit {
     couldNotReachServer: {
       title: "Nie można połączyć się z serverem",
       popMsg: new popInfo("Błąd połączenia", "Nie udało się połączyć z serverem, sprawdź połączenie internetowe i ponów próbę połączenie klikając w 'Ponów'", "Ponów", "Anuluj", () => this.ngOnInit())
+    },
+    getStrangerInfo(sex: string, age: number){
+      let sexStr: string = "";
+      let ageStr: string = "";
+      let str: string = "";
+      if(age != 0)
+        ageStr = ` | ${age} lat`
+      switch(sex as Sex){
+        case "Inne":
+          sexStr = "| Płeć: inna";
+          break;
+        case "Kobieta":
+          sexStr = "| Płeć: kobieta";
+          break;
+        case "Mężczyzna":
+          sexStr = "| Płeć: mężczyzna"
+          break;
+        case "Nie_podano":
+        default:
+          break; 
+
+      }
+      return `Połączono z rozmówcą ${sexStr}${ageStr}`
     }
   }
   DEBUG: boolean = false;
@@ -27,16 +52,19 @@ export class ChatComponent implements OnInit {
   chatMessages: Message[] = [];
   counter: number = 0;
   robotMessage: string = ""
-
+  preferences: Preferences;
   sub: Subscription;
 
   @ViewChild('textInput', { static: false }) inputField: ElementRef;
   @ViewChild('msgContainer', { static: false }) msgContainer: ElementRef;
 
-  constructor(private chatService: ChatService) {
+  constructor(private chatService: ChatService,private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) =>{
+      this.preferences = new Preferences({age: Number(params.get('tw')), sex: params.get('tp') as Sex}, {sex: params.get('pr') as Sex});
+    })
     this.robotMessage = this.RobotMessages.connecting;
     this.chatService.connect();
 
@@ -57,7 +85,8 @@ export class ChatComponent implements OnInit {
       // Called when connection is closed (for whatever reason)  
     );
     this.startPing();
-    console.log("init ended")
+    this.chatService.sendData(new Chatprotocol("newClient", JSON.stringify(this.preferences)))
+    console.log(JSON.stringify(this.preferences));
   }
 
   writingWatchdog;
@@ -73,7 +102,7 @@ export class ChatComponent implements OnInit {
     this.writingWatchdog = timer(500).subscribe(
       x => {
         if (this.actualWriting) {
-          this.chatService.sendData(new Chatprotocol("stopwriting", ""))
+          this.chatService.sendData(new Chatprotocol("stopWriting", ""))
           console.log("writting stop")
         }
         this.actualWriting = false;
@@ -127,21 +156,22 @@ export class ChatComponent implements OnInit {
       case "writing":
         this.setStrangerWritting("writing");
         break;
-      case "stopwriting":
+      case "stopWriting":
         this.setStrangerWritting("stopped");
         break;
-      case "giveLobbyId":
-        this.lobbyId = data.data;
-        this.robotMessage = this.RobotMessages.connected;
+      case "strangerFound":
+        let obj = JSON.parse(data.data);
+        console.log(data.data)
+        this.lobbyId = obj.lobbyId;
+        this.robotMessage = this.RobotMessages.getStrangerInfo(obj.sex, obj.age);
         this.postMessage(User.client, "Połączono z rozmówcą napisz hej :)")
         break;
-      case "giveId":
+      case "userId":
         this.userId = data.data;
         this.robotMessage = this.RobotMessages.connected;
-        this.chatService.sendData(new Chatprotocol("searchForStranger", ""))
+        this.chatService.sendData(new Chatprotocol("findStranger", ""))
         console.log(this.userId);
       case "ping":
-      case "searchForStranger":
       default:
         break;
     }

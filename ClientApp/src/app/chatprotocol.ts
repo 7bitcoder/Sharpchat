@@ -4,10 +4,16 @@ export class Chatprotocol {
       "message" |
       "writing" |
       "ping" |
-      "stopwriting" |
-      "giveId"|
-      "searchForStranger"|
-      "giveLobbyId",
+      "stopWriting" |
+      "newClient"|
+      "findStranger"|
+      "userId"|
+      "strangerFound"|
+      "reconnect"|
+      "reconnected"|
+      "close" |
+      "strangerDisconnected"|
+      "strangerClosed",
     public data: string
   ) { }
 }

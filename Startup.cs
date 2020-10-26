@@ -68,7 +68,7 @@ namespace SharpChat
                     {
                         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                         var socketFinishedTcs = new TaskCompletionSource<object>();
-                        server.handleUser(context, webSocket, socketFinishedTcs);
+                        server.handleUser(webSocket, socketFinishedTcs);
                         await socketFinishedTcs.Task;
                     }
                     else
