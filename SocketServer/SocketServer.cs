@@ -5,11 +5,6 @@ using System.Threading.Tasks;
 
 namespace SharpChat.SocketServer
 {
-    class Data
-    {
-        public string command { get; set; }
-        public string data { get; set; }
-    }
     public class SocketServer
     {
         static SocketServer server = new SocketServer();

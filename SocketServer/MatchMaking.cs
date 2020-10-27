@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace SharpChat.SocketServer
 {
-    class Lobby
-    {
-        public Guid lobbyId { set; get; }
-        public UserHandler first { set; get; }
-        public UserHandler second { set; get; }
-    }
     class MatchMaking
     {
         internal static Dictionary<Guid, Lobby> lobbys = new Dictionary<Guid, Lobby>();

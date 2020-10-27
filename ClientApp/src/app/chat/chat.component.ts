@@ -47,23 +47,32 @@ export class ChatComponent implements OnInit {
     }
   }
   DEBUG: boolean = false;
-  userId: string;
-  lobbyId: string;
+  userId: string = "";
+  lobbyId: string = "";
   chatMessages: Message[] = [];
   counter: number = 0;
   robotMessage: string = ""
   preferences: Preferences;
   sub: Subscription;
-
+  end: string = "Zakończ"
   @ViewChild('textInput', { static: false }) inputField: ElementRef;
   @ViewChild('msgContainer', { static: false }) msgContainer: ElementRef;
-
+  
+  isInLobby(): boolean {
+    return this.lobbyId != "";
+  }
   constructor(private chatService: ChatService,private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) =>{
-      this.preferences = new Preferences({age: Number(params.get('tw')), sex: params.get('tp') as Sex}, {sex: params.get('pr') as Sex});
+      let age = Number(params.get('tw'));
+      age = Number.isNaN(age) ? 0 : age;
+      let uSex = params.get('tp') as Sex;
+      uSex = uSex == undefined ? "Nie_podano" : uSex;
+      let sSex = params.get('tp') as Sex;
+      uSex = sSex == undefined ? "Nie_podano" : sSex;
+      this.preferences = new Preferences({age: age, sex: uSex}, {sex:sSex});
     })
     this.robotMessage = this.RobotMessages.connecting;
     this.chatService.connect();
@@ -197,10 +206,28 @@ export class ChatComponent implements OnInit {
     return message.id;
   }
 
+  asure: boolean = false;
   closeChat() {
-    console.log("closed")
+    if(this.isInLobby()){
+      if(this.asure){
+        this.close();
+        this.end = "Nowe Połączenie";
+      } else {
+        this.asure = true;
+        this.end = "Potwierdzenie zamknięcia";
+      }
+    } else {
+        this.asure = true;
+        this.end = "Zakończ";
+        this.chatService.sendData(new Chatprotocol("findStranger", ""))
+    }
   }
 
+  close(){
+    this.chatService.sendData(new Chatprotocol("close", ""));
+    this.lobbyId = "";
+    this.postMessage(User.client, "Rozmowa zakończona")
+  }
   changingValue: Subject<popInfo> = new Subject();
   showPopMessage(info: popInfo) {
     this.changingValue.next(info);
